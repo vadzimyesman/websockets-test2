@@ -32,7 +32,7 @@
         //     nickname varchar(30)
         //   ); 
 
-        //"start": "node ./server/server.js && npm build",
+        //"start": "node ./server/index.js && npm build",
         //"proxy":"http://localhost:4000",
 
         //https://random-word-api.herokuapp.com/word?number=10&swear=0
