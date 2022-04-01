@@ -19,6 +19,7 @@ function CardsSet(props) {
 
     const [black, setBlack] = useState("")
     const [ufRan, setufRan] = useState(true)
+    const [array,setArray] = useState([])
     
     const showCards = () =>{
       axios.get(`/api/showCards`)
@@ -52,12 +53,17 @@ function CardsSet(props) {
             setufRan(false)
               showCards()
           }
+          if (dataFromServer.type==="cardClick") {
+            console.log(`Component  recieved a message about ${dataFromServer.index}`)
+            setArray([...array,dataFromServer.index])
+            //buttonCliked()
+          }
           
         };
   },[])
     
 
-    const handleClick1 = () =>{
+    const handleClick1 =  () =>{
 
 
 
@@ -72,14 +78,15 @@ function CardsSet(props) {
                 setRed(res.data.red)
                 setGrey(res.data.grey)
                 setBlack(res.data.black)
-                    client.send(JSON.stringify({
-                      type: "newCards",
-                      msg: "Admin updated cards!",
-                      user: props.nickname
-                    }));
+                client.send(JSON.stringify({
+                  type: "newCards",
+                  msg: "Admin updated cards!",
+                  user: "Game"
+                }));
               })
               .catch(err=>console.log(err))
         })
+
       }
 
 
@@ -94,16 +101,20 @@ function CardsSet(props) {
         {randomWords.map((element,index)=>{
 
             if(red.includes(index)){
-              return < CardWithWord key={index} randomWord={element} color={props.spyStatus ? "red":"burlywood"}/>
+              return < CardWithWord  array={array} client={client} index={index} key={index} randomWord={element}
+               color={props.spyStatus ? "red":"burlywood" } color1={"red"} nickname={props.nickname}/>
             } 
             if(blue.includes(index)){
-              return < CardWithWord key={index} randomWord={element} color={props.spyStatus ? "blue":"burlywood"}/>
+              return < CardWithWord  array={array} client={client} index={index} key={index} randomWord={element}
+               color={props.spyStatus ? "blue":"burlywood"} color1={"blue"} nickname={props.nickname}/>
             } 
             if(grey.includes(index)){
-              return < CardWithWord key={index} randomWord={element} color={props.spyStatus ? "grey":"burlywood"}/>
+              return < CardWithWord array={array} client={client} index={index}  key={index} randomWord={element}
+               color={props.spyStatus ? "grey":"burlywood"} color1={"grey"} nickname={props.nickname}/>
             } 
             if(black===index){
-              return < CardWithWord key={index} randomWord={element} color={props.spyStatus ? "black":"burlywood"}/>
+              return < CardWithWord array={array} client={client} index={index} key={index} randomWord={element}
+               color={props.spyStatus ? "black":"burlywood"} color1={"black"} nickname={props.nickname}/>
             } 
         
         })}

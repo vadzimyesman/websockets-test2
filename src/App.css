@@ -17,6 +17,14 @@
   margin: 3px;
 }
 
+.wordCard{
+  height: 105px;
+  width: 175px;
+  border-radius: 25px;
+  ;
+
+}
+
 .divWithCards{
   width: 1000px;
   display: flex;

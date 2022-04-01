@@ -4,14 +4,14 @@ import { Card, Avatar, Input, Typography} from 'antd';
 import 'antd/dist/antd.css';
 
 
-const  HOST = window.location.origin.replace(/^http/, 'ws')
+ const  HOST = window.location.origin.replace(/^http/, 'ws')
 
 
 const { Search } = Input;
 const { Text } = Typography;
 const { Meta } = Card;
 
-const client = new W3CWebSocket(HOST);
+ const client = new W3CWebSocket(HOST);
 //const client = new W3CWebSocket(`ws://127.0.0.1:4000`);
 
 
@@ -42,6 +42,18 @@ function ChatTest(props) {
                     msg: dataFromServer.msg,
                     user: dataFromServer.user
                 }])
+            }
+            if (dataFromServer.type === "cardClick") {
+              setMessages([...messages,{
+                  msg: dataFromServer.msg,
+                  user: dataFromServer.user
+              }])
+            }
+            if (dataFromServer.type === "newCards") {
+              setMessages([...messages,{
+                  msg: dataFromServer.msg,
+                  user: dataFromServer.user
+              }])
             }
           };
     })
