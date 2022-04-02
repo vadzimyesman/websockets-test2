@@ -78,8 +78,8 @@ function Teams(props) {
     const addRedSpy=()=>{
         client.send(JSON.stringify({
             type: "updateTeams",
-            msg: "New player joined!",
-            user: props.nickname
+            message: "New player joined!",
+            nickname: props.nickname
           }));
         setSpystatus(true)
         const body ={
@@ -95,13 +95,28 @@ function Teams(props) {
             setDisplay1(false)
         })
         .catch(err=>console.log(err))
+        let body1={
+            message: `${props.nickname} joined red team as a spy`,
+            nickname: "Game"
+          }
+          axios.post("/api/post", body1)
+          //[ { message_id: 1, message: '123', nickname: '1' } ]
+          .then(res=>{
+            console.log(res.data)
+          .catch(err=>console.log(err))
+          })
+          client.send(JSON.stringify({
+            type: "newPlayer",
+            message: `${props.nickname} joined red team as a spy`,
+            nickname: "Game"
+          }));
     }
 
     const addBlueSpy=()=>{
         client.send(JSON.stringify({
             type: "updateTeams",
-            msg: "New player joined!",
-            user: props.nickname
+            message: "New player joined!",
+            nickname: props.nickname
           }));
         setSpystatus(true)
         const body = {
@@ -117,13 +132,28 @@ function Teams(props) {
             setDisplay1(false)
         })
         .catch(err=>console.log(err))
+        let body1={
+            message: `${props.nickname} joined blue team as a spy`,
+            nickname: "Game"
+          }
+          axios.post("/api/post", body1)
+          //[ { message_id: 1, message: '123', nickname: '1' } ]
+          .then(res=>{
+            console.log(res.data)
+          .catch(err=>console.log(err))
+          })
+          client.send(JSON.stringify({
+            type: "newPlayer",
+            message: `${props.nickname} joined blue team as a spy`,
+            nickname: "Game"
+          }));
     }
 
     const addRedAgent=()=>{
         client.send(JSON.stringify({
             type: "updateTeams",
-            msg: "New player joined!",
-            user: props.nickname
+            message: "New player joined!",
+            nickname: props.nickname
           }));
         const body ={
             nickname:props.nickname
@@ -138,13 +168,28 @@ function Teams(props) {
             setDisplay1(false)
         })
         .catch(err=>console.log(err))
+        let body1={
+            message: `${props.nickname} joined red team as an agent`,
+            nickname: "Game"
+          }
+          axios.post("/api/post", body1)
+          //[ { message_id: 1, message: '123', nickname: '1' } ]
+          .then(res=>{
+            console.log(res.data)
+          .catch(err=>console.log(err))
+          })
+          client.send(JSON.stringify({
+            type: "newPlayer",
+            message: `${props.nickname} joined red team as an agent`,
+            nickname: "Game"
+          }));
     }
 
     const addBlueAgent=()=>{
         client.send(JSON.stringify({
             type: "updateTeams",
-            msg: "New player joined!",
-            user: props.nickname
+            message: "New player joined!",
+            nickname: props.nickname
           }));
         const body ={
             nickname:props.nickname
@@ -159,6 +204,21 @@ function Teams(props) {
             setDisplay1(false)
         })
         .catch(err=>console.log(err))
+        let body1={
+            message: `${props.nickname} joined blue team as an agent`,
+            nickname: "Game"
+          }
+          axios.post("/api/post", body1)
+          //[ { message_id: 1, message: '123', nickname: '1' } ]
+          .then(res=>{
+            console.log(res.data)
+          .catch(err=>console.log(err))
+          })
+          client.send(JSON.stringify({
+            type: "newPlayer",
+            message: `${props.nickname} joined red team as an agent`,
+            nickname: "Game"
+          }));
     }
 
   return (

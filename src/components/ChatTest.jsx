@@ -2,17 +2,16 @@ import React, {useState, useEffect} from 'react';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { Card, Avatar, Input, Typography} from 'antd';
 import 'antd/dist/antd.css';
+import axios from 'axios';
 
 
- const  HOST = window.location.origin.replace(/^http/, 'ws')
-
+const  HOST = window.location.origin.replace(/^http/, 'ws')
+const client = new W3CWebSocket(HOST);
+//const client = new W3CWebSocket(`ws://127.0.0.1:4000`);
 
 const { Search } = Input;
 const { Text } = Typography;
 const { Meta } = Card;
-
- const client = new W3CWebSocket(HOST);
-//const client = new W3CWebSocket(`ws://127.0.0.1:4000`);
 
 
 function ChatTest(props) {
@@ -24,11 +23,30 @@ function ChatTest(props) {
   const  onButtonClicked = (value) => {
         client.send(JSON.stringify({
           type: "message",
-          msg: value,
-          user: props.nickname
+          message: value,
+          nickname: props.nickname
         }));
         setSearchVal("")
+        let body={
+          message: value,
+          nickname: props.nickname
+        }
+        axios.post("/api/post", body)
+        //[ { message_id: 1, message: '123', nickname: '1' } ]
+        .then(res=>{
+          console.log(res.data)
+        .catch(err=>console.log(err))
+        })
       }
+    
+
+    useEffect(()=>{
+      axios.get("/api/show")
+      .then(res=>{
+        setMessages(res.data)
+      })
+    },[])
+
 
     useEffect(()=>{
         client.onopen = () =>{
@@ -39,20 +57,26 @@ function ChatTest(props) {
             console.log('got reply! ', dataFromServer);
             if (dataFromServer.type === "message") {
                 setMessages([...messages,{
-                    msg: dataFromServer.msg,
-                    user: dataFromServer.user
+                    message: dataFromServer.message,
+                    nickname: dataFromServer.nickname
                 }])
             }
             if (dataFromServer.type === "cardClick") {
               setMessages([...messages,{
-                  msg: dataFromServer.msg,
-                  user: dataFromServer.user
+                  message: dataFromServer.message,
+                  nickname: dataFromServer.nickname
               }])
             }
             if (dataFromServer.type === "newCards") {
               setMessages([...messages,{
-                  msg: dataFromServer.msg,
-                  user: dataFromServer.user
+                  message: dataFromServer.message,
+                  nickname: dataFromServer.nickname
+              }])
+            }
+            if (dataFromServer.type === "newPlayer") {
+              setMessages([...messages,{
+                  message: dataFromServer.message,
+                  nickname: dataFromServer.nickname
               }])
             }
           };
@@ -77,13 +101,13 @@ function ChatTest(props) {
       </div> 
       <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: 50 }} id="messages">
         {messages.map((message,index) => 
-          <Card key={index} style={{ width: 300, margin: '16px 4px 0 4px', alignSelf: props.nickname === message.user ? 'flex-end' : 'flex-start' }} loading={false}>
+          <Card key={index} style={{ width: 300, margin: '16px 4px 0 4px', alignSelf: props.nickname === message.nickname ? 'flex-end' : 'flex-start' }} loading={false}>
             <Meta
               avatar={
-                <Avatar style={{ color: '#f56a00', backgroundColor: '#fde3cf' }}>{message.user[0].toUpperCase()}</Avatar>
+                <Avatar style={{ color: '#f56a00', backgroundColor: '#fde3cf' }}>{message.nickname[0].toUpperCase()}</Avatar>
               }
-              title={message.user+":"}
-              description={message.msg}
+              title={message.nickname+":"}
+              description={message.message}
             />
           </Card> 
         )}

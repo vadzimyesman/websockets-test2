@@ -3,15 +3,15 @@ import axios from 'axios'
 import React, { useState, useEffect } from 'react'
 import CardWithWord from './CardWithWord'
 import { w3cwebsocket as W3CWebSocket } from "websocket";
+
 const  HOST = window.location.origin.replace(/^http/, 'ws')
-
 const client = new W3CWebSocket(HOST);
-//const client = new W3CWebSocket(`ws://127.0.0.1:4000`);
 
+//const client = new W3CWebSocket(`ws://127.0.0.1:4000`);
 
 function CardsSet(props) {
 
-
+  
     const [randomWords, setRandomWords]=useState([])
     const [blue, setBlue] = useState([])
     const [red, setRed] = useState([])
@@ -30,6 +30,7 @@ function CardsSet(props) {
         setRed(res.data.red)
         setGrey(res.data.grey)
         setBlack(res.data.black)
+        setArray(res.data.open)
       })
     }
 
@@ -80,11 +81,21 @@ function CardsSet(props) {
                 setBlack(res.data.black)
                 client.send(JSON.stringify({
                   type: "newCards",
-                  msg: "Admin updated cards!",
-                  user: "Game"
+                  message: "Admin got new cards!",
+                  nickname: "Game"
                 }));
               })
               .catch(err=>console.log(err))
+        })
+        let body={
+          message: "Admin got new words",
+          nickname: "Game"
+        }
+        axios.post("/api/post", body)
+        //[ { message_id: 1, message: '123', nickname: '1' } ]
+        .then(res=>{
+          console.log(res.data)
+        .catch(err=>console.log(err))
         })
 
       }
@@ -102,19 +113,19 @@ function CardsSet(props) {
 
             if(red.includes(index)){
               return < CardWithWord  array={array} client={client} index={index} key={index} randomWord={element}
-               color={props.spyStatus ? "red":"burlywood" } color1={"red"} nickname={props.nickname}/>
+               color={props.spyStatus ? "red":"burlywood" } color1={"red"} nickname={props.nickname} spy={props.spyStatus} />
             } 
             if(blue.includes(index)){
               return < CardWithWord  array={array} client={client} index={index} key={index} randomWord={element}
-               color={props.spyStatus ? "blue":"burlywood"} color1={"blue"} nickname={props.nickname}/>
+               color={props.spyStatus ? "blue":"burlywood"} color1={"blue"} nickname={props.nickname} spy={props.spyStatus} />
             } 
             if(grey.includes(index)){
               return < CardWithWord array={array} client={client} index={index}  key={index} randomWord={element}
-               color={props.spyStatus ? "grey":"burlywood"} color1={"grey"} nickname={props.nickname}/>
+               color={props.spyStatus ? "grey":"burlywood"} color1={"grey"} nickname={props.nickname} spy={props.spyStatus} />
             } 
             if(black===index){
               return < CardWithWord array={array} client={client} index={index} key={index} randomWord={element}
-               color={props.spyStatus ? "black":"burlywood"} color1={"black"} nickname={props.nickname}/>
+               color={props.spyStatus ? "black":"burlywood"} color1={"black"} nickname={props.nickname} spy={props.spyStatus} />
             } 
         
         })}

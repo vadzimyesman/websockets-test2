@@ -117,7 +117,7 @@ const sequelize = new Sequelize(DATABASE_URL, {
 
       showAllPosts: (req,res) =>{
         sequelize.query(`
-        SELECT * FROM messages
+        SELECT message, nickname FROM messages
         `)
         .then(dbRes=>{
           console.log(dbRes[0])
@@ -426,7 +426,8 @@ const sequelize = new Sequelize(DATABASE_URL, {
               word_id serial primary key, 
               word varchar(30),
               color varchar(30),
-              index integer
+              index integer,
+              open boolean
             ); 
             `)
             req.body.map((word,index)=>{
@@ -441,8 +442,8 @@ const sequelize = new Sequelize(DATABASE_URL, {
                 color="black"
               }
               sequelize.query(`
-              INSERT INTO words (word,color,index)
-              VALUES ('${word}','${color}',${index});
+              INSERT INTO words (word,color,index,open)
+              VALUES ('${word}','${color}',${index},'false');
               `)
             })
             let object = {
@@ -465,7 +466,8 @@ const sequelize = new Sequelize(DATABASE_URL, {
               word_id serial primary key, 
               word varchar(30),
               color varchar(30),
-              index integer
+              index integer,
+              open boolean
             ); 
             `)
             req.body.map((word,index)=>{
@@ -480,8 +482,8 @@ const sequelize = new Sequelize(DATABASE_URL, {
                 color="black"
               }
               sequelize.query(`
-              INSERT INTO words (word,color,index)
-              VALUES ('${word}','${color}',${index});
+              INSERT INTO words (word,color,index,open)
+              VALUES ('${word}','${color}',${index},'false');
               `)
             })
             let object = {
@@ -508,7 +510,8 @@ const sequelize = new Sequelize(DATABASE_URL, {
             blue: [],
             grey: [],
             black: "",
-            words : []
+            words : [],
+            open: []
           }
           console.log(dbRes[0])
           console.log("showCards has ran")
@@ -526,9 +529,22 @@ const sequelize = new Sequelize(DATABASE_URL, {
               object2.black=(object.index)
             }
             object2.words.push(object.word)
+            if(object.open){
+              object2.open.push(object.index)
+            }
           })
           res.status(200).send(object2)
         })
+      },
+
+      addOpening: (req,res)=>{
+        let index = req.params.myParam
+        console.log(`Just opened a card with index: ${index}`)
+        sequelize.query(`
+        UPDATE words
+        SET open='true'
+        WHERE index=${index}
+        `)
       }
 
   }
