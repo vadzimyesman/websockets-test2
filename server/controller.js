@@ -401,7 +401,7 @@ const sequelize = new Sequelize(DATABASE_URL, {
 
       newWords: (req,res)=>{
         console.log("newWords has ran")
-        console.log(req.body)
+        console.log(req.body+"NNNNNNNNNNNNNNNNNNNNNNNNNNNNN")
         
       let coin = Math.floor(Math.random()*2+1)
         console.log(`coin is ${coin}`)
@@ -502,6 +502,7 @@ const sequelize = new Sequelize(DATABASE_URL, {
       showCards : (req,res)=>{
         sequelize.query(`
         SELECT * FROM words
+        ORDER BY index
         `)
         .then(dbRes=>{
           
@@ -533,6 +534,7 @@ const sequelize = new Sequelize(DATABASE_URL, {
               object2.open.push(object.index)
             }
           })
+          console.log(object2.words+"SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS")
           res.status(200).send(object2)
         })
       },

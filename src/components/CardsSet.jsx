@@ -7,11 +7,11 @@ import { w3cwebsocket as W3CWebSocket } from "websocket";
 const  HOST = window.location.origin.replace(/^http/, 'ws')
 const client = new W3CWebSocket(HOST);
 
-//const client = new W3CWebSocket(`ws://127.0.0.1:4000`);
+// const client = new W3CWebSocket(`ws://127.0.0.1:4000`);
 
 function CardsSet(props) {
 
-  
+
     const [randomWords, setRandomWords]=useState([])
     const [blue, setBlue] = useState([])
     const [red, setRed] = useState([])
