@@ -3,24 +3,29 @@ import axios from 'axios'
 import React, { useState, useEffect } from 'react'
 import CardWithWord from './CardWithWord'
 import { w3cwebsocket as W3CWebSocket } from "websocket";
+import ScoreRed from './ScoreRed';
+import ScoreBlue from './ScoreBlue';
 
-const  HOST = window.location.origin.replace(/^http/, 'ws')
-const client = new W3CWebSocket(HOST);
+// const  HOST = window.location.origin.replace(/^http/, 'ws')
+// const client = new W3CWebSocket(HOST);
 
-// const client = new W3CWebSocket(`ws://127.0.0.1:4000`);
+const client = new W3CWebSocket(`ws://127.0.0.1:4000`);
 
 function CardsSet(props) {
 
 
     const [randomWords, setRandomWords]=useState([])
+
     const [blue, setBlue] = useState([])
     const [red, setRed] = useState([])
     const [grey,setGrey] = useState([])
-
     const [black, setBlack] = useState("")
-    const [ufRan, setufRan] = useState(true)
+
     const [array,setArray] = useState([])
-    
+
+    const [blueLeft, setBlueLeft] = useState("")
+    const [redLeft, setRedLeft] = useState("")
+
     const showCards = () =>{
       axios.get(`/api/showCards`)
       .then(res=>{
@@ -31,6 +36,8 @@ function CardsSet(props) {
         setGrey(res.data.grey)
         setBlack(res.data.black)
         setArray(res.data.open)
+        setBlueLeft(res.data.blueLeft.length)
+        setRedLeft(res.data.redLeft.length)
       })
     }
 
@@ -51,17 +58,25 @@ function CardsSet(props) {
           const dataFromServer = JSON.parse(message.data);
           console.log('got reply! ', dataFromServer);
           if (dataFromServer.type==="newCards") {
-            setufRan(false)
               showCards()
           }
           if (dataFromServer.type==="cardClick") {
             console.log(`Component  recieved a message about ${dataFromServer.index}`)
             setArray([...array,dataFromServer.index])
-            //buttonCliked()
+            if (dataFromServer.color=="blue"){
+              console.log("Blue word was clicked")
+              console.log(`${blueLeft.length} blue cards left`)
+              setBlueLeft(blueLeft-1)
+            }
+            if (dataFromServer.color=="red"){
+              console.log("Red word was clicked")
+              console.log(`${redLeft.length} red cards left`)
+              setRedLeft(redLeft-1)
+            }
           }
           
         };
-  },[])
+  })
     
 
     const handleClick1 =  () =>{
@@ -79,6 +94,8 @@ function CardsSet(props) {
                 setRed(res.data.red)
                 setGrey(res.data.grey)
                 setBlack(res.data.black)
+                setBlueLeft(res.data.blueLeft.length)
+                setRedLeft(res.data.redLeft.length)
                 client.send(JSON.stringify({
                   type: "newCards",
                   message: "Admin got new cards!",
@@ -95,19 +112,27 @@ function CardsSet(props) {
         //[ { message_id: 1, message: '123', nickname: '1' } ]
         .then(res=>{
           console.log(res.data)
-        .catch(err=>console.log(err))
         })
+        .catch(err=>console.log(err))
 
       }
 
 
   return (
       <>
-    {props.nickname===props.admin &&<div>
-        <button
-        onClick={handleClick1}
-        >Get random words</button>
-    </div>}
+      <div className='aboveCards'>
+          <div className='scoreRed'>
+            <ScoreRed  value={redLeft}/>
+          </div>
+            {props.nickname===props.admin &&<div>
+            <button
+            onClick={handleClick1}
+            >Get random words</button>
+          </div>}
+          <div className='scoreBlue'>
+            <ScoreBlue  value={blueLeft}/>
+          </div>
+      </div>
     <div className='divWithCards'>
         {randomWords.map((element,index)=>{
 
@@ -130,6 +155,7 @@ function CardsSet(props) {
         
         })}
     </div>
+        
       </>
 
   )

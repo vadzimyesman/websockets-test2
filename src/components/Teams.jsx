@@ -3,9 +3,11 @@ import React, { useEffect, useState } from 'react'
 import KillGame from './KillGame'
 import CardsSet from './CardsSet'
 import { w3cwebsocket as W3CWebSocket } from "websocket";
-const  HOST = window.location.origin.replace(/^http/, 'ws')
-const client = new W3CWebSocket(HOST);
-// const client = new W3CWebSocket(`ws://127.0.0.1:4000`);
+import ScoreRed from './ScoreRed';
+import ScoreBlue from './ScoreBlue';
+// const  HOST = window.location.origin.replace(/^http/, 'ws')
+// const client = new W3CWebSocket(HOST);
+const client = new W3CWebSocket(`ws://127.0.0.1:4000`);
 
 
 function Teams(props) {
@@ -140,8 +142,8 @@ function Teams(props) {
           //[ { message_id: 1, message: '123', nickname: '1' } ]
           .then(res=>{
             console.log(res.data)
-          .catch(err=>console.log(err))
           })
+          .catch(err=>console.log(err))
           client.send(JSON.stringify({
             type: "newPlayer",
             message: `${props.nickname} joined blue team as a spy`,
@@ -176,8 +178,8 @@ function Teams(props) {
           //[ { message_id: 1, message: '123', nickname: '1' } ]
           .then(res=>{
             console.log(res.data)
-          .catch(err=>console.log(err))
           })
+          .catch(err=>console.log(err))
           client.send(JSON.stringify({
             type: "newPlayer",
             message: `${props.nickname} joined red team as an agent`,
@@ -240,12 +242,17 @@ function Teams(props) {
                 >Join as an agent</button>
             </div>}
         </div>
+        <div className='redScore'>
+                  <ScoreRed />
+        </div>
         <div className='topCenter'>
             <h1>Admin is {props.admin}</h1>
             {props.nickname === props.admin &&
             <KillGame />
             }
-            
+        </div>
+        <div className='blueScore'>
+                  <ScoreBlue />
         </div>
         <div className='blueTeam'>
             <h3 style={{color:"white"}}>Spy: {blueSpy}</h3>

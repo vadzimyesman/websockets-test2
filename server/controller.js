@@ -450,7 +450,9 @@ const sequelize = new Sequelize(DATABASE_URL, {
               red: redArr,
               blue: blueArr,
               grey: greyArr,
-              black: blackArr
+              black: blackArr,
+              redLeft: redArr.length,
+              blueLeft: blueArr.length
             }
             res.status(200).send(object)
           } else {
@@ -490,7 +492,9 @@ const sequelize = new Sequelize(DATABASE_URL, {
               red: redArr,
               blue: blueArr,
               grey: greyArr,
-              black: blackArr
+              black: blackArr,
+              redLeft: redArr,
+              blueLeft: blueArr
             }
             res.status(200).send(object)
           }
@@ -512,16 +516,24 @@ const sequelize = new Sequelize(DATABASE_URL, {
             grey: [],
             black: "",
             words : [],
-            open: []
+            open: [],
+            redLeft : [],
+            blueLeft: []
           }
           console.log(dbRes[0])
           console.log("showCards has ran")
           dbRes[0].map((object)=>{
             if (object.color=="red"){
               object2.red.push(object.index)
+              if(!object.open){
+                object2.redLeft.push(object.word)
+              }
             }
             if (object.color=="blue"){
               object2.blue.push(object.index)
+              if (!object.open){
+                object2.blueLeft.push(object.word)
+              }
             }
             if (object.color=="grey"){
               object2.grey.push(object.index)

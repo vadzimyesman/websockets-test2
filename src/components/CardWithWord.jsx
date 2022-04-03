@@ -31,7 +31,8 @@ useEffect(()=>{
       index: props.index,
       type: "cardClick",
       message: `${props.nickname} clicked on the ${props.randomWord}`,
-      nickname: "Game"
+      nickname: "Game",
+      color: props.color1
     }));
     let body1={
       message: `${props.nickname} clicked on the ${props.randomWord}`,
@@ -41,12 +42,8 @@ useEffect(()=>{
     //[ { message_id: 1, message: '123', nickname: '1' } ]
     .then(res=>{
       console.log(res.data)
-    .catch(err=>console.log(err))
     })
-    let body2={
-      message: `${props.nickname} clicked on the ${props.randomWord}`,
-      nickname: "Game"
-    }
+    .catch(err=>console.log(err))
     axios.put(`/api/addOpening/${props.index}`)
     //[ { message_id: 1, message: '123', nickname: '1' } ]
     .then(res=>{

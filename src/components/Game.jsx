@@ -1,5 +1,6 @@
 import React from 'react'
 import ChatTest from './ChatTest'
+import ClueInput from './ClueInput'
 import Teams from './Teams'
 
 function Game(props) {
@@ -8,15 +9,16 @@ function Game(props) {
 
     
   return (
-    <div >
-        <div className='gamePage'>
+    <div className='gamePage'>
+        <div >
             <Teams 
             nickname={props.nickname} 
             admin={props.admin==='no admin yet'? props.nickname : props.admin}
             />
-            <ChatTest nickname={props.nickname}/>
+            <ClueInput />
+            
         </div>
-
+        <ChatTest nickname={props.nickname}/>
     </div>
 
   )
