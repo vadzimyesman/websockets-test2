@@ -61,7 +61,7 @@ const sequelize = new Sequelize(DATABASE_URL, {
             }
             
          })
-         .catch(err=>console.log(err))
+         .catch(err=>console.log(err.message+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"))
       },
 
       registerPart: (req,res)=>{
@@ -186,6 +186,14 @@ const sequelize = new Sequelize(DATABASE_URL, {
             color varchar(30),
             index integer
           ); 
+          DROP TABLE turns;
+          Create table turns(
+            turn_id serial primary key,
+            red boolean,
+            spy boolean
+            );
+          INSERT INTO turns (red,spy)
+          VALUES (true,true)
         `)
         res.status(200).send("Game killed")
       },
@@ -443,9 +451,14 @@ const sequelize = new Sequelize(DATABASE_URL, {
               }
               sequelize.query(`
               INSERT INTO words (word,color,index,open)
-              VALUES ('${word}','${color}',${index},'false');
+              VALUES ('${word}','${color}',${index},false);
               `)
             })
+            sequelize.query(`
+            UPDATE turns
+            SET red=true, spy=true
+            WHERE turn_id=1
+            `)
             let object = {
               red: redArr,
               blue: blueArr,
@@ -485,9 +498,14 @@ const sequelize = new Sequelize(DATABASE_URL, {
               }
               sequelize.query(`
               INSERT INTO words (word,color,index,open)
-              VALUES ('${word}','${color}',${index},'false');
+              VALUES ('${word}','${color}',${index},false);
               `)
             })
+            sequelize.query(`
+            UPDATE turns
+            SET red=false, spy=true
+            WHERE turn_id=1
+            `)
             let object = {
               red: redArr,
               blue: blueArr,
@@ -504,12 +522,12 @@ const sequelize = new Sequelize(DATABASE_URL, {
 
 
       showCards : (req,res)=>{
+
         sequelize.query(`
         SELECT * FROM words
         ORDER BY index
         `)
-        .then(dbRes=>{
-          
+        .then(dbRes1=>{
           let object2 = {
             red: [],
             blue: [],
@@ -518,11 +536,14 @@ const sequelize = new Sequelize(DATABASE_URL, {
             words : [],
             open: [],
             redLeft : [],
-            blueLeft: []
+            blueLeft: [],
+            redTurn: null,
+            spyTurn: null
+  
           }
-          console.log(dbRes[0])
+          console.log(dbRes1[0])
           console.log("showCards has ran")
-          dbRes[0].map((object)=>{
+          dbRes1[0].map((object)=>{
             if (object.color=="red"){
               object2.red.push(object.index)
               if(!object.open){
@@ -546,7 +567,7 @@ const sequelize = new Sequelize(DATABASE_URL, {
               object2.open.push(object.index)
             }
           })
-          console.log(object2.words+"SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS")
+          console.log(object2.words)
           res.status(200).send(object2)
         })
       },
@@ -559,6 +580,75 @@ const sequelize = new Sequelize(DATABASE_URL, {
         SET open='true'
         WHERE index=${index}
         `)
-      }
+      },
 
+      newClue: (req,res)=>{
+        const {nickname, clue, red, numberOfWords} = req.body
+        let spyColor
+        if (red){
+          spyColor="Red"
+        } else {
+          spyColor="Blue"
+        }
+        sequelize.query(`
+        UPDATE clues
+        SET clue='${clue}', numberofwords=${numberOfWords}, nickname='${nickname}', red=${red}
+        WHERE clue_id=1
+        `)
+        res.status(200).send(`{${spyColor} spy ${nickname} gave a clue ${clue} for ${numberOfWords} words`)
+      },
+
+
+      showTurn: (req,res)=>{
+        sequelize.query(`
+        SELECT * FROM turns
+        `)
+        .then(dbRes=>{
+          console.log(dbRes[0])
+          let object={
+            red:dbRes[0][0].red,
+            spy:dbRes[0][0].spy
+          }
+          console.log(object)
+          res.status(200).send(object)
+        })
+      },
+
+      nextTurn: (req,res)=>{
+        sequelize.query(`
+        SELECT * FROM turns
+        `)
+        .then(dbRes=>{
+          if (dbRes[0][0].spy){
+            sequelize.query(`
+            UPDATE turns
+            SET spy=false
+            WHERE turn_id=1
+            `)
+          } else {
+            sequelize.query(`
+            UPDATE turns
+            SET spy=true, red=${!dbRes[0][0].red}
+            WHERE turn_id=1
+            `)
+          }
+          res.sendStatus(200)
+        })
+      },
+
+      showClue: (req,res)=>{
+        sequelize.query(`
+        SELECT * FROM clues
+        `)
+        .then(dbRes=>{
+          console.log(dbRes[0][0])
+          object={
+            clue: dbRes[0][0].clue,
+            numberOfWords: dbRes[0][0].numberofwords,
+            nickname: dbRes[0][0].nickname,
+            red: dbRes[0][0].red
+          }
+          res.status(200).send(object)
+        })
+      }
   }

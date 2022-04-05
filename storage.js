@@ -44,3 +44,17 @@
         //         color varchar(30),
         //         index integer
         //       ); 
+
+        // Create table turns(
+        //         turn_id serial primary key,
+        //         red boolean,
+        //         spy boolean
+        //         )
+
+        // create table clues (
+        //         clue_id serial primary key, 
+        //         clue varchar(30),
+        //         numberOfWords integer,
+        //         nickname varchar(30),
+        //         red boolean
+        //       ); 

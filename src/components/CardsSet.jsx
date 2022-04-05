@@ -5,6 +5,7 @@ import CardWithWord from './CardWithWord'
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import ScoreRed from './ScoreRed';
 import ScoreBlue from './ScoreBlue';
+import ClueInput from './ClueInput';
 
 const  HOST = window.location.origin.replace(/^http/, 'ws')
 const client = new W3CWebSocket(HOST);
@@ -26,6 +27,10 @@ function CardsSet(props) {
     const [blueLeft, setBlueLeft] = useState("")
     const [redLeft, setRedLeft] = useState("")
 
+    //WHo's turn it is?
+    const [redTurn,setRedTurn]=useState(null)
+    const [spyTurn, setSpyTurn]=useState(null)
+
     const showCards = () =>{
       axios.get(`/api/showCards`)
       .then(res=>{
@@ -41,11 +46,20 @@ function CardsSet(props) {
       })
     }
 
+    const showTurn = () =>{
+        axios.get(`/api/showTurn`)
+        .then(res=>{
+          console.log(res.data.red,res.data.spy+"  Response from showTurn")
+          setRedTurn(res.data.red)
+          setSpyTurn(res.data.spy)
+        })
+    }
+
 
     useEffect(()=>{
       console.log("Initial use effect ran in cards")
       showCards()
-
+      showTurn()
     },[])
 
   useEffect(()=>{
@@ -74,7 +88,9 @@ function CardsSet(props) {
               setRedLeft(redLeft-1)
             }
           }
-          
+          if (dataFromServer.type==="clue") {
+            showTurn()
+          }
         };
   })
     
@@ -89,13 +105,20 @@ function CardsSet(props) {
           setRandomWords(res.data)
               axios.post(`/api/newWords`,res.data )
               .then(res=>{
-                console.log(res.data)
+                console.log(res.data+"222222222222222222222222222222222222222")
                 setBlue(res.data.blue)
                 setRed(res.data.red)
                 setGrey(res.data.grey)
                 setBlack(res.data.black)
                 setBlueLeft(res.data.blueLeft.length)
                 setRedLeft(res.data.redLeft.length)
+                if(res.data.red.length===9){
+                  setRedTurn(true)
+                  setSpyTurn(true)
+                } else {
+                  setRedTurn(false)
+                  setSpyTurn(true)
+                }
                 client.send(JSON.stringify({
                   type: "newCards",
                   message: "Admin got new cards!",
@@ -117,6 +140,7 @@ function CardsSet(props) {
 
       }
 
+console.log(redTurn,props.red,spyTurn,props.spyStatus)
 
   return (
       <>
@@ -133,28 +157,31 @@ function CardsSet(props) {
             <ScoreBlue  value={blueLeft}/>
           </div>
       </div>
-    <div className='divWithCards'>
-        {randomWords.map((element,index)=>{
+      <div className='divWithCards'>
+          {randomWords.map((element,index)=>{
 
-            if(red.includes(index)){
-              return < CardWithWord  array={array} client={client} index={index} key={index} randomWord={element}
-               color={props.spyStatus ? "red":"burlywood" } color1={"red"} nickname={props.nickname} spy={props.spyStatus} />
-            } 
-            if(blue.includes(index)){
-              return < CardWithWord  array={array} client={client} index={index} key={index} randomWord={element}
-               color={props.spyStatus ? "blue":"burlywood"} color1={"blue"} nickname={props.nickname} spy={props.spyStatus} />
-            } 
-            if(grey.includes(index)){
-              return < CardWithWord array={array} client={client} index={index}  key={index} randomWord={element}
-               color={props.spyStatus ? "grey":"burlywood"} color1={"grey"} nickname={props.nickname} spy={props.spyStatus} />
-            } 
-            if(black===index){
-              return < CardWithWord array={array} client={client} index={index} key={index} randomWord={element}
-               color={props.spyStatus ? "black":"burlywood"} color1={"black"} nickname={props.nickname} spy={props.spyStatus} />
-            } 
-        
-        })}
-    </div>
+              if(red.includes(index)){
+                return < CardWithWord  array={array} client={client} index={index} key={index} randomWord={element} red={props.red}
+                color={props.spyStatus ? "red":"burlywood" } color1={"red"} nickname={props.nickname} spy={props.spyStatus} redTurn={redTurn} spyTurn={spyTurn}/>
+              } 
+              if(blue.includes(index)){
+                return < CardWithWord  array={array} client={client} index={index} key={index} randomWord={element} red={props.red}
+                color={props.spyStatus ? "blue":"burlywood"} color1={"blue"} nickname={props.nickname} spy={props.spyStatus} redTurn={redTurn} spyTurn={spyTurn}/>
+              } 
+              if(grey.includes(index)){
+                return < CardWithWord array={array} client={client} index={index}  key={index} randomWord={element} red={props.red}
+                color={props.spyStatus ? "grey":"burlywood"} color1={"grey"} nickname={props.nickname} spy={props.spyStatus} redTurn={redTurn} spyTurn={spyTurn}/>
+              } 
+              if(black===index){
+                return < CardWithWord array={array} client={client} index={index} key={index} randomWord={element} red={props.red}
+                color={props.spyStatus ? "black":"burlywood"} color1={"black"} nickname={props.nickname} spy={props.spyStatus} redTurn={redTurn} spyTurn={spyTurn}/>
+              } 
+          
+          })}
+      </div>
+      {(redTurn===props.red&&spyTurn&&props.spyStatus) && <div>
+        <ClueInput nickname={props.nickname} red={props.red}/>
+      </div>}
         
       </>
 

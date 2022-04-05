@@ -3,7 +3,7 @@
 }
 
 .article {
-  height: 105px;
+  height: 98px;
   width: 175px;
   place-items: center;
   display: flex;
@@ -97,10 +97,10 @@ body{
   height: 30px;
   border-radius: 20px;
 }
-
+/* 
 .main{
-  height: 100%;
-}
+  max-height: 100vh;
+} */
 
 .gameField{
   width: 100%;

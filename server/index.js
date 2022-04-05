@@ -9,7 +9,7 @@ const { client } = require('websocket');
 const PORT = process.env.PORT || 4000
 
 const {seedDataBase, loginPart, registerPart, postMessage, showAllPosts, startNewGame, adminCheck, killGame, redSpy, blueSpy, redAgent, blueAgent,
-     showTeams, newWords, showCards, addOpening}= require("./controller.js")
+     showTeams, newWords, showCards, addOpening, newClue, showTurn, nextTurn, showClue}= require("./controller.js")
 
 //Spinning the http server and the websocket server.
 const server = require('http'). createServer(app);
@@ -63,7 +63,7 @@ wsServer.on('request', function (request){
 //Middleware
 app.use(express.json())
 app.use(cors())
-app.use(express.static(path.resolve(__dirname,"../build")))
+//app.use(express.static(path.resolve(__dirname,"../build")))
 //Endpoints
 app.post("/api/seed", seedDataBase)
 
@@ -85,6 +85,8 @@ app.post("/api/blueAgent", blueAgent)
 
 app.post("/api/newWords", newWords)
 
+app.post("/api/newClue", newClue)
+
 app.get("/api/show", showAllPosts)
 
 app.get("/api/adminCheck", adminCheck)
@@ -94,6 +96,12 @@ app.get("/api/killGame", killGame)
 app.get("/api/showTeams", showTeams)
 
 app.get("/api/showCards", showCards)
+
+app.get("/api/showTurn", showTurn)
+
+app.get("/api/nextTurn", nextTurn)
+
+app.get("/api/showClue", showClue)
 
 app.put("/api/addOpening/:myParam", addOpening)
 

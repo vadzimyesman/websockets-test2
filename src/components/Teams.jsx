@@ -20,8 +20,9 @@ function Teams(props) {
     const [display1, setDisplay1]=useState(true)
     const [display2, setDisplay2]=useState(true)
     const [display3, setDisplay3]=useState(true)
-    const [spyStatus, setSpystatus]=useState(false)
-    
+    const [red, setRed] = useState(null)
+    const [spy, setSpy] = useState(null)
+
 
     useEffect(()=>{
         console.log("Initial use effect ran in teams")
@@ -42,7 +43,14 @@ function Teams(props) {
                 setDisplay3(false)
             }
             if (res.data.blueSpy.includes(props.nickname)||res.data.redSpy.includes(props.nickname)){
-                setSpystatus(true)
+                setSpy(true)
+            } else {
+              setSpy(false)
+            }
+            if (res.data.redSpy.includes(props.nickname)||res.data.redAgents.includes(props.nickname)){
+              setRed(true)
+            } else {
+              setRed(false)
             }
             
         })
@@ -83,7 +91,7 @@ function Teams(props) {
             message: "New player joined!",
             nickname: props.nickname
           }));
-        setSpystatus(true)
+        setSpy(true)
         const body ={
             nickname:props.nickname
         }
@@ -105,13 +113,15 @@ function Teams(props) {
           //[ { message_id: 1, message: '123', nickname: '1' } ]
           .then(res=>{
             console.log(res.data)
-          .catch(err=>console.log(err))
           })
+          .catch(err=>console.log(err))
           client.send(JSON.stringify({
             type: "newPlayer",
             message: `${props.nickname} joined red team as a spy`,
             nickname: "Game"
           }));
+          setRed(true)
+          setSpy(true)
     }
 
     const addBlueSpy=()=>{
@@ -120,7 +130,7 @@ function Teams(props) {
             message: "New player joined!",
             nickname: props.nickname
           }));
-        setSpystatus(true)
+        setSpy(true)
         const body = {
             nickname:props.nickname
         }
@@ -149,6 +159,8 @@ function Teams(props) {
             message: `${props.nickname} joined blue team as a spy`,
             nickname: "Game"
           }));
+          setRed(false)
+          setSpy(true)
     }
 
     const addRedAgent=()=>{
@@ -185,6 +197,8 @@ function Teams(props) {
             message: `${props.nickname} joined red team as an agent`,
             nickname: "Game"
           }));
+          setRed(true)
+          setSpy(false)
     }
 
     const addBlueAgent=()=>{
@@ -221,6 +235,8 @@ function Teams(props) {
             message: `${props.nickname} joined red team as an agent`,
             nickname: "Game"
           }));
+          setRed(false)
+          setSpy(false)
     }
 
   return (
@@ -269,7 +285,7 @@ function Teams(props) {
             </div>}
         </div>
     </div>
-    {!display1 && <CardsSet nickname={props.nickname} admin={props.admin} spyStatus={spyStatus}/>}
+    {!display1 && <CardsSet nickname={props.nickname} admin={props.admin} spyStatus={spy} red={red}/> }
     </div>
     
 

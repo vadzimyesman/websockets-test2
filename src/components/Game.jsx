@@ -15,7 +15,7 @@ function Game(props) {
             nickname={props.nickname} 
             admin={props.admin==='no admin yet'? props.nickname : props.admin}
             />
-            <ClueInput />
+            
             
         </div>
         <ChatTest nickname={props.nickname}/>

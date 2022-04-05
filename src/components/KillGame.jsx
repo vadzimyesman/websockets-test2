@@ -5,7 +5,7 @@ function KillGame() {
 
     const handleClick1 = () =>{
         axios.get(`/api/killGame`)
-        .then(res=>window.location.reload(false))
+        .then(res=>window.location.reload())
         .catch(err=>console.log(err))
     }
 
