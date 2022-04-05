@@ -1,6 +1,5 @@
 import React from 'react'
 import ChatTest from './ChatTest'
-import ClueInput from './ClueInput'
 import Teams from './Teams'
 
 function Game(props) {

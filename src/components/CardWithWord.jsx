@@ -6,16 +6,16 @@ import React, { useState, useEffect } from 'react'
 
 
 function CardWithWord(props) {
-  console.log(`Player's color is red?:${props.red}, Is it reds turn?:${props.redTurn}`)
+  
+
 
   const [buttonColor, setButtonColor] = useState(props.color)
   const [buttonContent, setButtonContent] = useState(props.randomWord)
-  //const [maxClicks, setMaxClicks] = useState(null)
+
+  console.log(`Player's color is red?:${props.red}, Is it reds turn?:${props.redTurn}`)
+  console.log(`You can make ${+props.maxClicks+1} clicks`)
   
-  const buttonCliked = ()=>{
-    console.log(props.index)
-    setButtonColor(props.color1)
-  }
+
   
 useEffect(()=>{
   if (props.array.includes(props.index)){
@@ -36,7 +36,7 @@ useEffect(()=>{
 // },[])
 
   const handleClick = ()=> {
-    buttonCliked()
+    setButtonColor(props.color1)
     props.client.send(JSON.stringify({
       index: props.index,
       type: "cardClick",
@@ -60,6 +60,26 @@ useEffect(()=>{
       console.log(res.data)
     .catch(err=>console.log(err))
     })
+    if (props.maxClicks!==0){
+      if((props.red&&props.color1==="red")||(!props.red&&props.color1==="blue")){
+        props.setMaxClicks(props.maxClicks-1)
+        console.log("Right color clicked!")
+        console.log(props.maxClicks)
+      } else {
+        axios.get("api/nextTurn")
+        .then(res=>console.log(res.data))
+        .catch(err=>console.log(err))
+        props.client.send(JSON.stringify({
+          type: "turn",
+          message: `Turn is over`,
+        }));
+      }
+    } else {
+      axios.get("api/nextTurn")
+      .then(res=>console.log(res.data))
+      .catch(err=>console.log(err))
+    }
+
   }
 
 

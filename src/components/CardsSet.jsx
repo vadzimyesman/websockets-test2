@@ -30,6 +30,7 @@ function CardsSet(props) {
     //WHo's turn it is?
     const [redTurn,setRedTurn]=useState(null)
     const [spyTurn, setSpyTurn]=useState(null)
+    const [maxClicks, setMaxClicks] = useState(null)
 
     const showCards = () =>{
       axios.get(`/api/showCards`)
@@ -49,7 +50,7 @@ function CardsSet(props) {
     const showTurn = () =>{
         axios.get(`/api/showTurn`)
         .then(res=>{
-          console.log(res.data.red,res.data.spy+"  Response from showTurn")
+          console.log(res.data.red,res.data.spy)
           setRedTurn(res.data.red)
           setSpyTurn(res.data.spy)
         })
@@ -89,6 +90,10 @@ function CardsSet(props) {
             }
           }
           if (dataFromServer.type==="clue") {
+            setMaxClicks(dataFromServer.message.numberOfWords)
+            showTurn()
+          }
+          if (dataFromServer.type==="turn") {
             showTurn()
           }
         };
@@ -116,6 +121,9 @@ function CardsSet(props) {
                   setRedTurn(true)
                   setSpyTurn(true)
                 } else {
+                  axios.get("api/nextTurn")
+                  .then(res=>console.log(res.data))
+                  .catch(err=>console.log(err))
                   setRedTurn(false)
                   setSpyTurn(true)
                 }
@@ -148,11 +156,14 @@ console.log(redTurn,props.red,spyTurn,props.spyStatus)
           <div className='scoreRed'>
             <ScoreRed  value={redLeft}/>
           </div>
-            {props.nickname===props.admin &&<div>
+          <div>
+          {props.nickname===props.admin &&<div>
             <button
             onClick={handleClick1}
             >Get random words</button>
           </div>}
+          <h4>{redTurn? "Red":"Blue"} &nbsp;{spyTurn? "spy":"agent"}, it is your turn!</h4>
+          </div>
           <div className='scoreBlue'>
             <ScoreBlue  value={blueLeft}/>
           </div>
@@ -161,19 +172,19 @@ console.log(redTurn,props.red,spyTurn,props.spyStatus)
           {randomWords.map((element,index)=>{
 
               if(red.includes(index)){
-                return < CardWithWord  array={array} client={client} index={index} key={index} randomWord={element} red={props.red}
+                return < CardWithWord  array={array} client={client} index={index} key={index} randomWord={element} red={props.red} maxClicks={maxClicks} setMaxClicks={setMaxClicks}
                 color={props.spyStatus ? "red":"burlywood" } color1={"red"} nickname={props.nickname} spy={props.spyStatus} redTurn={redTurn} spyTurn={spyTurn}/>
               } 
               if(blue.includes(index)){
-                return < CardWithWord  array={array} client={client} index={index} key={index} randomWord={element} red={props.red}
+                return < CardWithWord  array={array} client={client} index={index} key={index} randomWord={element} red={props.red} maxClicks={maxClicks} setMaxClicks={setMaxClicks}
                 color={props.spyStatus ? "blue":"burlywood"} color1={"blue"} nickname={props.nickname} spy={props.spyStatus} redTurn={redTurn} spyTurn={spyTurn}/>
               } 
               if(grey.includes(index)){
-                return < CardWithWord array={array} client={client} index={index}  key={index} randomWord={element} red={props.red}
+                return < CardWithWord array={array} client={client} index={index}  key={index} randomWord={element} red={props.red} maxClicks={maxClicks} setMaxClicks={setMaxClicks}
                 color={props.spyStatus ? "grey":"burlywood"} color1={"grey"} nickname={props.nickname} spy={props.spyStatus} redTurn={redTurn} spyTurn={spyTurn}/>
               } 
               if(black===index){
-                return < CardWithWord array={array} client={client} index={index} key={index} randomWord={element} red={props.red}
+                return < CardWithWord array={array} client={client} index={index} key={index} randomWord={element} red={props.red} maxClicks={maxClicks} setMaxClicks={setMaxClicks}
                 color={props.spyStatus ? "black":"burlywood"} color1={"black"} nickname={props.nickname} spy={props.spyStatus} redTurn={redTurn} spyTurn={spyTurn}/>
               } 
           

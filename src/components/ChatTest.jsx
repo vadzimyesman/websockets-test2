@@ -82,12 +82,13 @@ function ChatTest(props) {
             }
             if (dataFromServer.type === "clue") {
               setMessages([{
-                  message: dataFromServer.message,
+                  message: dataFromServer.message.message,
                   nickname: dataFromServer.nickname
               },...messages])
             }
           };
     })
+    
 
   return (
 

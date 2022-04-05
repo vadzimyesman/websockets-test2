@@ -30,7 +30,10 @@ function ClueInput(props) {
     .catch(err=>console.log(err))
     client.send(JSON.stringify({
       type: "clue",
-      message: `${props.red? "Red":"Blue"} spy ${props.nickname} gave a clue ${clue} for ${numberOfWords} words`,
+      message: {
+        numberOfWords:numberOfWords,
+        message:`${props.red? "Red":"Blue"} spy ${props.nickname} gave a clue ${clue} for ${numberOfWords} words`
+      },
       nickname: "Game"
     }));
   }
