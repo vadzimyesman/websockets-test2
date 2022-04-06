@@ -9,7 +9,7 @@ const client = new W3CWebSocket(HOST);
 function ClueInput(props) {
 
 
-  const [clue, setClue] = useState(null)
+  const [clue, setClue] = useState("")
   const [numberOfWords, setNumberOfWords] = useState("1")
 
   const handleSubmit = (e) =>{

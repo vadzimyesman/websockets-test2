@@ -423,6 +423,11 @@ const sequelize = new Sequelize(DATABASE_URL, {
           console.log(randomIndex)
           let randomArr = [...randomIndex]
           if (coin===1){
+            sequelize.query(`
+            UPDATE turns
+            SET red='true', spy='true'
+            WHERE turn_id=1
+            `)
             let redArr= randomArr.splice(0,9)
             let blueArr=randomArr.splice(0,8)
             let greyArr = randomArr.splice(0,7)
@@ -454,11 +459,6 @@ const sequelize = new Sequelize(DATABASE_URL, {
               VALUES ('${word}','${color}',${index},false);
               `)
             })
-            sequelize.query(`
-            UPDATE turns
-            SET red=true, spy=true
-            WHERE turn_id=1
-            `)
             let object = {
               red: redArr,
               blue: blueArr,
@@ -469,6 +469,11 @@ const sequelize = new Sequelize(DATABASE_URL, {
             }
             res.status(200).send(object)
           } else {
+            sequelize.query(`
+            UPDATE turns
+            SET red='false', spy='true'
+            WHERE turn_id=1
+            `)
             let redArr= randomArr.splice(0,8)
             let blueArr=randomArr.splice(0,9)
             let greyArr = randomArr.splice(0,7)
@@ -501,11 +506,6 @@ const sequelize = new Sequelize(DATABASE_URL, {
               VALUES ('${word}','${color}',${index},false);
               `)
             })
-            sequelize.query(`
-            UPDATE turns
-            SET red=false, spy=true
-            WHERE turn_id=1
-            `)
             let object = {
               red: redArr,
               blue: blueArr,

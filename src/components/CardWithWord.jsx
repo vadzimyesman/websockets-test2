@@ -27,13 +27,6 @@ useEffect(()=>{
 },[props.array])
 
 
-// useEffect(()=>{
-//   axios.get("api/showClue")
-//   .then(res=>{
-//     console.log(res.data)
-//   })
-//   .catch(err=>console.log(err))
-// },[])
 
   const handleClick = ()=> {
     setButtonColor(props.color1)
@@ -58,8 +51,8 @@ useEffect(()=>{
     //[ { message_id: 1, message: '123', nickname: '1' } ]
     .then(res=>{
       console.log(res.data)
-    .catch(err=>console.log(err))
     })
+    .catch(err=>console.log(err))
     if (props.maxClicks!==0){
       if((props.red&&props.color1==="red")||(!props.red&&props.color1==="blue")){
         props.setMaxClicks(props.maxClicks-1)
@@ -78,6 +71,10 @@ useEffect(()=>{
       axios.get("api/nextTurn")
       .then(res=>console.log(res.data))
       .catch(err=>console.log(err))
+      props.client.send(JSON.stringify({
+        type: "turn",
+        message: `Turn is over`,
+      }));
     }
 
   }
