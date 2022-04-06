@@ -32,10 +32,11 @@ function CardsSet(props) {
     const [spyTurn, setSpyTurn]=useState(null)
     const [maxClicks, setMaxClicks] = useState(null)
 
+
     const showCards = () =>{
       axios.get(`/api/showCards`)
       .then(res=>{
-        console.log(res.data)
+        console.log(res.data, "USEEFFECT")
         setRandomWords(res.data.words)
         setBlue(res.data.blue)
         setRed(res.data.red)
@@ -73,17 +74,18 @@ function CardsSet(props) {
           const dataFromServer = JSON.parse(message.data);
           console.log('got reply! ', dataFromServer);
           if (dataFromServer.type==="newCards") {
+            console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
               showCards()
           }
           if (dataFromServer.type==="cardClick") {
             console.log(`Component  recieved a message about ${dataFromServer.index}`)
             setArray([...array,dataFromServer.index])
-            if (dataFromServer.color=="blue"){
+            if (dataFromServer.color==="blue"){
               console.log("Blue word was clicked")
               console.log(`${blueLeft.length} blue cards left`)
               setBlueLeft(blueLeft-1)
             }
-            if (dataFromServer.color=="red"){
+            if (dataFromServer.color==="red"){
               console.log("Red word was clicked")
               console.log(`${redLeft.length} red cards left`)
               setRedLeft(redLeft-1)
@@ -104,15 +106,22 @@ function CardsSet(props) {
 
       let newWordsArray = []
         for (let i=1; i<=25;i++){
+
           axios.get(`https://random-word-form.herokuapp.com/random/noun`)
           .then(res=>{
             console.log(res.data[0])
             newWordsArray.push(res.data[0])
             if (i===25){
               setRandomWords(newWordsArray)
+              setBlue([])
+              setRed([])
+              setGrey([])
+              setBlack("")
+              setBlueLeft([])
+              setRedLeft([])
               axios.post(`/api/newWords`, newWordsArray )
               .then(res=>{
-                console.log(res.data)
+                console.log(res.data, "CLICKED")
                 setBlue(res.data.blue)
                 setRed(res.data.red)
                 setGrey(res.data.grey)
@@ -160,8 +169,8 @@ console.log(redTurn,props.red,spyTurn,props.spyStatus)
             onClick={handleClick1}
             >Get random words</button>
           </div>}
-          {blueLeft===0 && <h4>Blue team has won the game!</h4>}
-          {redLeft===0 && <h4>Red team has won the game!</h4>}
+          {blueLeft===0&&redLeft!==0 && <h4>Blue team has won the game!</h4>}
+          {redLeft===0&&blueLeft!==0 && <h4>Red team has won the game!</h4>}
           {blueLeft!==0&&redLeft!==0 && <h4>{redTurn? "Red":"Blue"} &nbsp;{spyTurn? "spy":"agents"}, it is your turn! {!spyTurn &&   `${maxClicks+1} clicks possibly available!`}</h4>}
           </div>
           <div className='scoreBlue'>
@@ -190,7 +199,7 @@ console.log(redTurn,props.red,spyTurn,props.spyStatus)
           
           })}
       </div>
-      {(redTurn===props.red&&spyTurn&&props.spyStatus) && <div>
+      {(redTurn===props.red&&spyTurn&&props.spyStatus&&blueLeft!==0&&redLeft!==0) && <div>
         <ClueInput nickname={props.nickname} red={props.red}/>
       </div>}
         

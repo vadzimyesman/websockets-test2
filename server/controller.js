@@ -545,22 +545,22 @@ const sequelize = new Sequelize(DATABASE_URL, {
           console.log(dbRes1[0])
           console.log("showCards has ran")
           dbRes1[0].map((object)=>{
-            if (object.color=="red"){
+            if (object.color==="red"){
               object2.red.push(object.index)
               if(!object.open){
                 object2.redLeft.push(object.word)
               }
             }
-            if (object.color=="blue"){
+            if (object.color==="blue"){
               object2.blue.push(object.index)
               if (!object.open){
                 object2.blueLeft.push(object.word)
               }
             }
-            if (object.color=="grey"){
+            if (object.color==="grey"){
               object2.grey.push(object.index)
             }
-            if (object.color=="black"){
+            if (object.color==="black"){
               object2.black=(object.index)
             }
             object2.words.push(object.word)
