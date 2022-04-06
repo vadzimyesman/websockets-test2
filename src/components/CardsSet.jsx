@@ -90,7 +90,7 @@ function CardsSet(props) {
             }
           }
           if (dataFromServer.type==="clue") {
-            setMaxClicks(+dataFromServer.message.numberOfWords+1)
+            setMaxClicks(+dataFromServer.message.numberOfWords)
             showTurn()
           }
           if (dataFromServer.type==="turn") {
@@ -162,7 +162,7 @@ console.log(redTurn,props.red,spyTurn,props.spyStatus)
             onClick={handleClick1}
             >Get random words</button>
           </div>}
-          <h4>{redTurn? "Red":"Blue"} &nbsp;{spyTurn? "spy":"agent"}, it is your turn! {maxClicks} clicks available!</h4>
+          <h4>{redTurn? "Red":"Blue"} &nbsp;{spyTurn? "spy":"agent"}, it is your turn! {maxClicks+1} clicks available!</h4>
           </div>
           <div className='scoreBlue'>
             <ScoreBlue  value={blueLeft}/>

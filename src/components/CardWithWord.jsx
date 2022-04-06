@@ -11,12 +11,7 @@ function CardWithWord(props) {
 
   const [buttonColor, setButtonColor] = useState(props.color)
   const [buttonContent, setButtonContent] = useState(props.randomWord)
-
-  console.log(`Player's color is red?:${props.red}, Is it reds turn?:${props.redTurn}`)
-  console.log(`You can make ${+props.maxClicks+1} clicks`)
-  
-
-  
+    
 useEffect(()=>{
   if (props.array.includes(props.index)){
     setButtonColor(props.color1)
