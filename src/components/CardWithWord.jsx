@@ -11,7 +11,7 @@ function CardWithWord(props) {
 
   const [buttonColor, setButtonColor] = useState(props.color)
   const [buttonContent, setButtonContent] = useState(props.randomWord)
-    
+
 useEffect(()=>{
   if (props.array.includes(props.index)){
     setButtonColor(props.color1)
@@ -101,7 +101,7 @@ useEffect(()=>{
                   className='wordCard'
                   style={{color: `white`, backgroundColor: `${buttonColor}`}}    
             >
-              <h1 style={{fontSize:`${260/props.randomWord.length}px`}}>{buttonContent}</h1>
+              <h1 style={{marginBottom:"0px",fontSize:`${260/props.randomWord.length}px`, color:"white", fontWeight:"800"}}>{buttonContent}</h1>
             </div>
           </div>  
           } 

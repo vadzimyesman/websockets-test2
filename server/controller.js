@@ -425,7 +425,7 @@ const sequelize = new Sequelize(DATABASE_URL, {
           if (coin===1){
             sequelize.query(`
             UPDATE turns
-            SET red='true', spy='true'
+            SET red=true, spy=true
             WHERE turn_id=1
             `)
             let redArr= randomArr.splice(0,9)
@@ -471,7 +471,7 @@ const sequelize = new Sequelize(DATABASE_URL, {
           } else {
             sequelize.query(`
             UPDATE turns
-            SET red='false', spy='true'
+            SET red=false, spy=true
             WHERE turn_id=1
             `)
             let redArr= randomArr.splice(0,8)

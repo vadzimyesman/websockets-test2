@@ -103,7 +103,7 @@ function CardsSet(props) {
     const handleClick1 =  () =>{
 
 
-
+      //https://random-word-form.herokuapp.com/random/noun
         axios.get(`https://random-word-api.herokuapp.com/word?number=25`)
         .then(res=>{
           console.log(res.data)

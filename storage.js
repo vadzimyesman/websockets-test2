@@ -58,3 +58,30 @@
         //         nickname varchar(30),
         //         red boolean
         //       ); 
+
+        // axios.post(`/api/newWords`,res.data )
+        // .then(res=>{
+        //   console.log(res.data+"222222222222222222222222222222222222222")
+        //   setBlue(res.data.blue)
+        //   setRed(res.data.red)
+        //   setGrey(res.data.grey)
+        //   setBlack(res.data.black)
+        //   setBlueLeft(res.data.blueLeft.length)
+        //   setRedLeft(res.data.redLeft.length)
+        //   if(res.data.red.length===9){
+        //     setRedTurn(true)
+        //     setSpyTurn(true)
+        //   } else {
+        //     axios.get("api/nextTurn")
+        //     .then(res=>console.log(res.data))
+        //     .catch(err=>console.log(err))
+        //     setRedTurn(false)
+        //     setSpyTurn(true)
+        //   }
+        //   client.send(JSON.stringify({
+        //     type: "newCards",
+        //     message: "Admin got new cards!",
+        //     nickname: "Game"
+        //   }));
+        // })
+        // .catch(err=>console.log(err))
