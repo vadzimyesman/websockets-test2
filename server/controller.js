@@ -184,7 +184,8 @@ const sequelize = new Sequelize(DATABASE_URL, {
             word_id serial primary key, 
             word varchar(30),
             color varchar(30),
-            index integer
+            index integer,
+            open boolean
           ); 
           DROP TABLE turns;
           Create table turns(
@@ -425,7 +426,7 @@ const sequelize = new Sequelize(DATABASE_URL, {
           if (coin===1){
             sequelize.query(`
             UPDATE turns
-            SET red=true, spy=true
+            SET red=true , spy=true
             WHERE turn_id=1
             `)
             let redArr= randomArr.splice(0,9)
@@ -456,7 +457,7 @@ const sequelize = new Sequelize(DATABASE_URL, {
               }
               sequelize.query(`
               INSERT INTO words (word,color,index,open)
-              VALUES ('${word}','${color}',${index},false);
+              VALUES ('${word}','${color}',${index},FALSE);
               `)
             })
             let object = {
@@ -503,7 +504,7 @@ const sequelize = new Sequelize(DATABASE_URL, {
               }
               sequelize.query(`
               INSERT INTO words (word,color,index,open)
-              VALUES ('${word}','${color}',${index},false);
+              VALUES ('${word}','${color}',${index},FALSE);
               `)
             })
             let object = {

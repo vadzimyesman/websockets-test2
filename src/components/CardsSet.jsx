@@ -102,15 +102,17 @@ function CardsSet(props) {
 
     const handleClick1 =  () =>{
 
-
-      //https://random-word-form.herokuapp.com/random/noun
-        axios.get(`https://random-word-api.herokuapp.com/word?number=25`)
-        .then(res=>{
-          console.log(res.data)
-          setRandomWords(res.data)
-              axios.post(`/api/newWords`,res.data )
+      let newWordsArray = []
+        for (let i=1; i<=25;i++){
+          axios.get(`https://random-word-form.herokuapp.com/random/noun`)
+          .then(res=>{
+            console.log(res.data[0])
+            newWordsArray.push(res.data[0])
+            if (i===25){
+              setRandomWords(newWordsArray)
+              axios.post(`/api/newWords`, newWordsArray )
               .then(res=>{
-                console.log(res.data+"222222222222222222222222222222222222222")
+                console.log(res.data)
                 setBlue(res.data.blue)
                 setRed(res.data.red)
                 setGrey(res.data.grey)
@@ -121,31 +123,27 @@ function CardsSet(props) {
                   setRedTurn(true)
                   setSpyTurn(true)
                 } else {
-                  axios.get("api/nextTurn")
-                  .then(res=>console.log(res.data))
-                  .catch(err=>console.log(err))
                   setRedTurn(false)
                   setSpyTurn(true)
                 }
-                client.send(JSON.stringify({
-                  type: "newCards",
-                  message: "Admin got new cards!",
-                  nickname: "Game"
-                }));
               })
-              .catch(err=>console.log(err))
-        })
+            }
+          })
+        }
         let body={
-          message: "Admin got new words",
+          message: "Admin got new words!",
           nickname: "Game"
         }
         axios.post("/api/post", body)
-        //[ { message_id: 1, message: '123', nickname: '1' } ]
         .then(res=>{
           console.log(res.data)
         })
         .catch(err=>console.log(err))
-
+        client.send(JSON.stringify({
+          type: "newCards",
+          message: "Admin got new cards!",
+          nickname: "Game"
+        }));
       }
 
 console.log(redTurn,props.red,spyTurn,props.spyStatus)
@@ -162,7 +160,9 @@ console.log(redTurn,props.red,spyTurn,props.spyStatus)
             onClick={handleClick1}
             >Get random words</button>
           </div>}
-          <h4>{redTurn? "Red":"Blue"} &nbsp;{spyTurn? "spy":"agent"}, it is your turn! {maxClicks+1} clicks available!</h4>
+          {blueLeft===0 && <h4>Blue team has won the game!</h4>}
+          {redLeft===0 && <h4>Red team has won the game!</h4>}
+          {blueLeft!==0&&redLeft!==0 && <h4>{redTurn? "Red":"Blue"} &nbsp;{spyTurn? "spy":"agents"}, it is your turn! {!spyTurn &&   `${maxClicks+1} clicks possibly available!`}</h4>}
           </div>
           <div className='scoreBlue'>
             <ScoreBlue  value={blueLeft}/>
