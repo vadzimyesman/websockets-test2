@@ -33,7 +33,8 @@ function CardsSet(props) {
     const [maxClicks, setMaxClicks] = useState(null)
 
 
-    const showCards = () =>{
+    useEffect(()=>{
+      console.log("Initial use effect ran in cards")
       axios.get(`/api/showCards`)
       .then(res=>{
         console.log(res.data, "USEEFFECT")
@@ -46,22 +47,12 @@ function CardsSet(props) {
         setBlueLeft(res.data.blueLeft.length)
         setRedLeft(res.data.redLeft.length)
       })
-    }
-
-    const showTurn = () =>{
-        axios.get(`/api/showTurn`)
-        .then(res=>{
-          console.log(res.data.red,res.data.spy)
-          setRedTurn(res.data.red)
-          setSpyTurn(res.data.spy)
-        })
-    }
-
-
-    useEffect(()=>{
-      console.log("Initial use effect ran in cards")
-      showCards()
-      showTurn()
+      axios.get(`/api/showTurn`)
+      .then(res=>{
+        console.log(res.data.red,res.data.spy)
+        setRedTurn(res.data.red)
+        setSpyTurn(res.data.spy)
+      })
     },[])
 
   useEffect(()=>{
@@ -74,8 +65,25 @@ function CardsSet(props) {
           const dataFromServer = JSON.parse(message.data);
           console.log('got reply! ', dataFromServer);
           if (dataFromServer.type==="newCards") {
-            console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-              showCards()
+            setBlue([])
+            setRed([])
+            setGrey([])
+            setBlack("")
+            setBlueLeft([])
+            setRedLeft([])
+            console.log("New cards should be shown!")
+            axios.get(`/api/showCards`)
+            .then(res=>{
+              console.log(res.data, "USEEFFECT")
+              setRandomWords(res.data.words)
+              setBlue(res.data.blue)
+              setRed(res.data.red)
+              setGrey(res.data.grey)
+              setBlack(res.data.black)
+              setArray(res.data.open)
+              setBlueLeft(res.data.blueLeft.length)
+              setRedLeft(res.data.redLeft.length)
+            })
           }
           if (dataFromServer.type==="cardClick") {
             console.log(`Component  recieved a message about ${dataFromServer.index}`)
@@ -93,13 +101,23 @@ function CardsSet(props) {
           }
           if (dataFromServer.type==="clue") {
             setMaxClicks(+dataFromServer.message.numberOfWords)
-            showTurn()
+            axios.get(`/api/showTurn`)
+            .then(res=>{
+              console.log(res.data.red,res.data.spy)
+              setRedTurn(res.data.red)
+              setSpyTurn(res.data.spy)
+            })
           }
           if (dataFromServer.type==="turn") {
-            showTurn()
+            axios.get(`/api/showTurn`)
+            .then(res=>{
+              console.log(res.data.red,res.data.spy)
+              setRedTurn(res.data.red)
+              setSpyTurn(res.data.spy)
+            })
           }
         };
-  })
+  },[])
     
 
     const handleClick1 =  () =>{
@@ -135,24 +153,24 @@ function CardsSet(props) {
                   setRedTurn(false)
                   setSpyTurn(true)
                 }
+                client.send(JSON.stringify({
+                  type: "newCards",
+                  message: "Admin got new cards!",
+                  nickname: "Game"
+                }));
+                let body={
+                  message: "Admin got new words!",
+                  nickname: "Game"
+                }
+                axios.post("/api/post", body)
+                .then(res=>{
+                  console.log(res.data)
+                })
+                .catch(err=>console.log(err))
               })
             }
           })
         }
-        let body={
-          message: "Admin got new words!",
-          nickname: "Game"
-        }
-        axios.post("/api/post", body)
-        .then(res=>{
-          console.log(res.data)
-        })
-        .catch(err=>console.log(err))
-        client.send(JSON.stringify({
-          type: "newCards",
-          message: "Admin got new cards!",
-          nickname: "Game"
-        }));
       }
 
 console.log(redTurn,props.red,spyTurn,props.spyStatus)
